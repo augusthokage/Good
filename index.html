@@ -340,6 +340,27 @@
       <a href="#" class="how-link">How does this work?</a>
     </div>
 
+    <!-- Модальное окно "How does this work?" -->
+    <div id="how-modal" class="how-modal" style="display:none;">
+      <div class="how-modal-content">
+        <div class="how-modal-title">How does this work?</div>
+        <div class="how-modal-body">
+          <div style="margin-bottom: 10px;">You sell this username</div>
+          <div style="font-weight:600; margin-bottom: 6px;">To do so, simply:</div>
+          <ul class="how-modal-list">
+            <li>Connect TON wallet</li>
+            <li>Deposit funds in your wallet from a supported exchange or with <a href="#" style="color:#4faaff;text-decoration:underline;">@wallet</a> on Telegram.</li>
+            <li>Pay a commission of 5%</li>
+          </ul>
+          <div style="margin: 10px 0 0 0;">When you have completed a deal to sell your name, after paying the commission, the money will be credited to your wallet account.</div>
+        </div>
+        <div class="how-modal-footer">
+          <a href="#" class="how-modal-learn">Learn More</a>
+          <a href="#" class="how-modal-close">Close</a>
+        </div>
+      </div>
+    </div>
+
     <div class="details-box">
   <div class="detail-row">
     <span class="label">Telegram Username</span>
@@ -364,6 +385,95 @@
       as the buyer is a verified merchant on a Fragment<br />
       that has a security deposit of 💎10,000.
     </div>
+    <style>
+      .how-modal {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(10,16,24,0.85);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: inherit;
+      }
+      .how-modal-content {
+        background: #232b33;
+        border-radius: 12px;
+        box-shadow: 0 4px 32px 0 rgba(0,0,0,0.25);
+        padding: 24px 28px 18px 28px;
+        max-width: 360px;
+        width: 94vw;
+        color: #e6e6e6;
+        font-size: 15px;
+        line-height: 1.5;
+        position: relative;
+      }
+      .how-modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #fff;
+      }
+      .how-modal-list {
+        padding-left: 18px;
+        margin: 0 0 0 0;
+        color: #e6e6e6;
+        font-size: 15px;
+      }
+      .how-modal-list li {
+        margin-bottom: 4px;
+      }
+      .how-modal-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 18px;
+      }
+      .how-modal-learn {
+        color: #4faaff;
+        font-size: 15px;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .how-modal-close {
+        color: #7a8a99;
+        font-size: 15px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      @media (max-width: 500px) {
+        .how-modal-content { padding: 16px 4vw 12px 4vw; }
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var howLink = document.querySelector('.how-link');
+        var modal = document.getElementById('how-modal');
+        var closeBtn = document.querySelector('.how-modal-close');
+        var learnBtn = document.querySelector('.how-modal-learn');
+        if (howLink && modal && closeBtn) {
+          howLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.style.display = 'flex';
+          });
+          closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.style.display = 'none';
+          });
+          // Закрытие по клику вне окна
+          modal.addEventListener('click', function(e) {
+            if (e.target === modal) modal.style.display = 'none';
+          });
+        }
+        if (learnBtn) {
+          learnBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.open('https://fragment.com/help', '_blank');
+          });
+        }
+      });
+    </script>
   </div>
   
 
