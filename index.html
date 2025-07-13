@@ -49,7 +49,7 @@
       font-weight: 700;
       color: #e6e6e6;
       letter-spacing: -0.3px;
-      margin-left: 1px;
+      margin-left: 0px;
       font-family: Bebas Neue;
     }
 
@@ -248,7 +248,7 @@
       color: white;
       border: none;
       border-radius: 10px;
-      font-weight: 500;
+      font-weight: 700;
       cursor: pointer;
       margin-bottom: 12px;
       margin-top: 15px;
@@ -537,4 +537,50 @@
   </style>
 
 </body>
+  <div class="tradeinfo-footer-nav">
+    <div class="footer-links">
+      <a href="#" class="footer-link">Top Auctions</a>
+      <a href="#" class="footer-link">About</a>
+      <a href="#" class="footer-link">Terms</a>
+      <a href="#" class="footer-link">Privacy</a>
+    </div>
+  </div>
+  <style>
+    .tradeinfo-footer-nav {
+      width: 100vw;
+      background: #111417;
+      border-top: 0px solid #232b33;
+      margin: 0;
+      padding: 0;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      border-radius: 0 0 0px 0px;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      z-index: 1001;
+    }
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      margin: 0 auto;
+    }
+    .footer-link {
+      color: #7a8a99;
+      font-size: 9px;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 600;
+    }
+    .footer-link:hover {
+      color: #4faaff;
+    }
+    @media (max-width: 600px) {
+      .footer-links { gap: 16px; }
+      .footer-link { font-size: 13px; }
+    }
+  </style>
 </html>
