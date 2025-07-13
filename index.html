@@ -49,7 +49,7 @@
       font-weight: 700;
       color: #e6e6e6;
       letter-spacing: -0.3px;
-      margin-left: -2px;
+      margin-left: 1px;
       font-family: Bebas Neue;
     }
 
@@ -121,7 +121,6 @@
     .ton-icon {
       width: 22px;
       height: 22px;
-      margin-right: 0px;
     }
 
     .usd-value {
@@ -192,8 +191,8 @@
     .ton-icon {
       width: 18px;
       height: 18px;
-      margin-right: -8px;
-      margin-top: -1px;
+      margin-right: -9px;
+      margin-top: 0px;
     }
 
     .info-usd {
@@ -238,7 +237,7 @@
     .value-link {
       color: #4faaff;
       text-decoration: none;
-      font-size: 11px;
+      font-size: 14px;
     }
 
     .button {
@@ -326,16 +325,16 @@
         <div class="bottom-item">
           <div class="value">
             <img src="ton.png" alt="TON" class="ton-icon" />
-            <span id="deal-price">4,500</span>
+            <span id="deal-price">3236</span>
           </div>
-          <div class="usd-value" id="deal-usd">~ $13,356</div>
+          <div class="usd-value" id="deal-usd">~ $13,500.00</div>
         </div>
         <div class="bottom-item">
           <div class="value">
             <img src="ton.png" alt="TON" class="ton-icon" />
             <span id="commission">225</span>
           </div>
-          <div class="usd-value" id="commission-usd">~ $667</div>
+          <div class="usd-value" id="commission-usd">~ $675.00</div>
         </div>
       </div>
       <a href="#" class="how-link">How does this work?</a>
@@ -371,10 +370,18 @@
   <script>
   Telegram.WebApp.ready();
 
+  // Курс TON к доллару
+  const TON_TO_USD = 3;
+
   // Функция для получения параметров из URL
   function getParam(name) {
     const url = new URL(window.location.href);
     return url.searchParams.get(name);
+  }
+
+  // Форматирование числа с двумя знаками после запятой
+  function formatUSD(value) {
+    return Number(value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
   }
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -387,16 +394,16 @@
     if (price) document.getElementById('deal-price').textContent = price;
 
     // Deal USD
-    const usd = getParam('usd');
-    if (usd) document.getElementById('deal-usd').textContent = '~ $' + usd;
+    if (price) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
 
     // Commission
     const commission = getParam('commission');
     if (commission) document.getElementById('commission').textContent = commission;
+    else if (price) document.getElementById('commission').textContent = (price * 0.05).toFixed(2);
 
     // Commission USD
-    const commissionUsd = getParam('commissionusd');
-    if (commissionUsd) document.getElementById('commission-usd').textContent = '~ $' + commissionUsd;
+    if (commission) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
+    else if (price) document.getElementById('commission-usd').textContent = '~ $' + formatUSD((price * 0.05) * TON_TO_USD);
 
     // Telegram username
     const username = getParam('username');
@@ -406,70 +413,9 @@
       document.getElementById('web-address').textContent = 't.me/' + username;
       document.getElementById('web-address-link').href = 'https://t.me/' + username;
     }
-
   });
-</script>
-<script>
-  Telegram.WebApp.ready();
-
-  // Курс TON к доллару
-  const TON_TO_USD = 2.96; // замените на актуальный курс
-
-  // Функция для получения параметров из URL
-  function getParam(name) {
-    const url = new URL(window.location.href);
-    return url.searchParams.get(name);
-  }
-
-  // Функция для форматирования числа с двумя знаками после запятой
-  function formatUSD(value) {
-    return Number(value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    // Deal price (TON)
-    const price = getParam('price');
-    if (price) {
-      document.getElementById('deal-price').textContent = price;
-      // Пересчёт в USD
-      const usd = formatUSD(price * TON_TO_USD);
-      document.getElementById('deal-usd').textContent = `~ $${usd}`;
-    }
-
-    // Commission (TON)
-    const commission = getParam('commission');
-    if (commission) {
-      document.getElementById('commission').textContent = commission;
-      // Пересчёт в USD
-      const commissionUsd = formatUSD(commission * TON_TO_USD);
-      document.getElementById('commission-usd').textContent = `~ $${commissionUsd}`;
-    }
-
-    // Deal name
-    const dealName = getParam('dealname');
-    if (dealName) {
-      document.getElementById('deal-name').textContent = dealName;
-      document.getElementById('ton-web').textContent = dealName;
-      document.getElementById('ton-web-link').href = 'https://' + dealName;
-    }
-
-    // Telegram username
-    const username = getParam('username');
-    if (username) {
-      document.getElementById('tg-username').textContent = '@' + username;
-      document.getElementById('tg-username-link').href = 'https://t.me/' + username;
-      document.getElementById('web-address').textContent = 't.me/' + username;
-      document.getElementById('web-address-link').href = 'https://t.me/' + username;
-    }
-
-    // Buyer (в футере)
-    const buyer = getParam('buyer');
-    if (buyer) {
-      const buyerSpans = document.querySelectorAll('.deal-footer .deal-row:nth-child(3) .value');
-      if (buyerSpans.length > 0) buyerSpans[0].textContent = buyer;
-    }
-  });
-</script>
+  </script>
+<!-- Удалён дублирующийся скрипт с TON_TO_USD -->
 <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 <script>
   // Ваш TON-кошелек для получения комиссии
@@ -518,8 +464,8 @@
 
 </script>
 
-  <div class="tradeinfo-header" style="margin-top:30px; margin-bottom: 0px; height: 33px; padding-left: 25px;">
-  <span class="tradeinfo-name" style="font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 1px; font-family: Bebas Neue Regular 400;">Trade Info</span>
+  <div class="tradeinfo-header" style="margin-top:30px; margin-bottom: 0px; height: 33px; margin-left: 6px;">
+  <span class="tradeinfo-name" style="font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.5px; font-family: Bebas Neue Regular 400;">Trade Info</span>
   </div>
   <div class="tradeinfo-box tradeinfo-panel">
     <div class="tradeinfo-row tradeinfo-row-labels">
