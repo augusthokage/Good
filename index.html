@@ -395,6 +395,13 @@
         align-items: center;
         justify-content: center;
         font-family: inherit;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s cubic-bezier(.4,0,.2,1);
+      }
+      .how-modal.show {
+        opacity: 1;
+        pointer-events: auto;
       }
       .how-modal-content {
         background: #232b33;
@@ -456,14 +463,20 @@
           howLink.addEventListener('click', function(e) {
             e.preventDefault();
             modal.style.display = 'flex';
+            // Триггерим плавное появление через класс
+            setTimeout(function() { modal.classList.add('show'); }, 10);
           });
+          function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(function() { modal.style.display = 'none'; }, 250);
+          }
           closeBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            modal.style.display = 'none';
+            closeModal();
           });
           // Закрытие по клику вне окна
           modal.addEventListener('click', function(e) {
-            if (e.target === modal) modal.style.display = 'none';
+            if (e.target === modal) closeModal();
           });
         }
         if (learnBtn) {
@@ -679,14 +692,17 @@
       margin: 0 auto;
     }
     .footer-link {
-      color: #7a8a99;
+      color: #6d8394;
       font-size: 9px;
       text-decoration: none;
-      transition: color 0.2s;
       font-weight: 400;
+      pointer-events: none;
+      cursor: default;
+      opacity: 1;
+      transition: none;
     }
     .footer-link:hover {
-      color: #4faaff;
+      color: #6d8394;
     }
     @media (max-width: 600px) {
       .footer-links { gap: 16px; }
