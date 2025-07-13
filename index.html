@@ -9,39 +9,133 @@
   <style>
     body {
       margin: 0;
-      background-color: #0d1117;
+      background-color: #1a2026;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
       color: white;
     }
 
     .container {
-      max-width: 480px;
+      max-width: 440px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 0px;
+      padding-top: 50px;
     }
 
     .header {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+      background: #212a33;
+      border-radius: 0px 0px 0 0;
+      padding: 0 0 0 18px;
+      min-height: 42px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      z-index: 1000;
     }
 
     .header img {
-      height: 50px;
-      margin-right: 1px;
+      height: 32px;
+      margin-right: 10px;
     }
 
     .header span {
-      font-size: 15px;
-      font-weight: 600;
-      color: #ccc;
+      font-size: 20px;
+      font-weight: 700;
+      color: #e6e6e6;
+      letter-spacing: -0.3px;
+      margin-left: -15px;
+      font-family: Bebas Neue;
     }
 
     .deal-box {
-      background-color: #161b22;
+      background-color: #212a33;
       border-radius: 10px;
-      padding: 16px;
+      padding: 0;
       margin-bottom: 16px;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+      user-select: none;
+      height: 100%;
+    }
+
+    .top-row {
+      display: flex;
+      background-color: #2a3440;
+      color: #707c88;
+      padding: 7px 0 12px 0;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      font-weight: 650;
+      font-size: 13px;
+      justify-content: space-between;
+      box-sizing: border-box;
+      height: 30px;
+    }
+
+    .top-item {
+      flex: 1;
+      text-align: center;
+      user-select: text;
+    }
+
+    .divider {
+      height: 1px;
+      background-color: #212a33;
+      margin: 0;
+    }
+
+    .bottom-row {
+      display: flex;
+      background-color: #212a33;
+      padding: 2px 0 0 0;
+      margin-right: 10px;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      justify-content: space-between;
+      box-sizing: border-box;
+      color: white;
+    }
+
+    .bottom-item {
+      flex: 1;
+      text-align: center;
+    }
+
+    .value {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      gap: 8px;
+    }
+
+    .ton-icon {
+      width: 22px;
+      height: 22px;
+      margin-right: 0px;
+    }
+
+    .usd-value {
+      font-size: 13px;
+      color: #7a8a99;
+      margin-top: -1px;
+    }
+
+    .how-link {
+      display: block;
+      text-align: center;
+      margin: 18px 0 10px 0;
+      font-size: 15px;
+      color: #4faaff;
+      text-decoration: none;
+      cursor: pointer;
+      user-select: text;
+      padding-right: 230px;
     }
 
     .deal-header {
@@ -87,20 +181,20 @@
     .info-value {
       display: flex;
       align-items: center;
-      font-size: 18px;
+      font-size: 10px;
       font-weight: bold;
     }
 
     .ton-icon {
       width: 16px;
       height: 16px;
-      margin-right: 4px;
+      margin-right: 0px;
     }
 
     .info-usd {
       font-size: 13px;
       color: #888;
-      margin-top: 4px;
+      margin-top: 10px;
     }
 
     .how-link {
@@ -113,26 +207,30 @@
     }
 
     .details-box {
-      background-color: #161b22;
+      background-color: #212a33;
       border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 16px;
+      overflow: hidden; /* обрезает скругления правильно */
+      height: 100px;
     }
 
     .detail-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
+      padding: 7px 16px;
+      font-size: 14px;
+      color: #fbfdfe;
+      border-bottom: 1px solid #1a2026;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none; /* убираем линию у последнего */
     }
 
     .label {
-      font-weight: 600;
-      font-size: 14px;
-      color: #ccc;
+      font-weight: 400;
     }
 
-    .value, .value-link {
-      font-size: 14px;
+    .value-link {
       color: #4faaff;
       text-decoration: none;
     }
@@ -141,13 +239,14 @@
       width: 100%;
       padding: 14px;
       font-size: 16px;
-      background-color: #2298ff;
+      background-color: #248bda;
       color: white;
       border: none;
       border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
       margin-bottom: 12px;
+      margin-top: 16px;
     }
 
     .subscribe {
@@ -159,8 +258,9 @@
       cursor: pointer;
     }
 
+
     .info-box {
-      background-color: #0e1621;
+      background-color: #212a33;
       color: #b0c4d8;
       font-size: 13px;
       padding: 14px;
@@ -203,31 +303,36 @@
 </div>
 
 
+    <!-- Ник и статус -->
+    <div class="deal-nick-row" style="display: flex; align-items: center; justify-content: space-between; background: #1b2026; border-radius: 12px 12px 0 0; padding: -50px -50px 0%; margin-bottom: 20px;">
+      <p class="move-right"></p>
+      <div id="deal-nick" style="font-size: 17px; font-weight: 1000; color: #fff; letter-spacing: 0.2px; padding-left: 30px; margin-top: 20px;">vladiimrgod.t.me</div>
+      <p class="move-left"></p>
+      <div id="deal-status" style="background: #203530; color: #4cec81; font-size: 10px; font-weight: 600; border-radius: 999px; padding: 7px 22px; margin-left: -50px; margin-top: 20px;">Deal In Progress</div>
+      <p class="move-left"></p>
+    </div>
     <div class="deal-box">
-      <div class="deal-header">
-  <span class="deal-name" id="deal-name">vladiimrgod.t.me</span>
-  <span class="deal-status" id="deal-status">Deal In Progress</span>
-</div>
-
-<div class="deal-info">
-  <div class="info-column">
-    <span class="info-title">Deal Price</span>
-    <div class="info-value">
-      <img class="ton-icon" src="ton.png" alt="TON" /> 
-      <span id="deal-price">1</span>
-    </div>
-    <span class="info-usd" id="deal-usd">~ $2.98</span>
-  </div>
-  <div class="info-column">
-    <span class="info-title">Commission</span>
-    <div class="info-value">
-      <img class="ton-icon" src="ton.png" alt="TON" /> 
-      <span id="commission">2</span>
-    </div>
-    <span class="info-usd" id="commission-usd">~ $2</span>
-  </div>
-</div>
-
+      <div class="top-row">
+        <div class="top-item">Deal Price</div>
+        <div class="top-item">Commission</div>
+      </div>
+      <div class="divider"></div>
+      <div class="bottom-row">
+        <div class="bottom-item">
+          <div class="value">
+            <img src="ton.png" alt="TON" class="ton-icon" />
+            <span id="deal-price">4500</span>
+          </div>
+          <div class="usd-value" id="deal-usd">~ $13356.00</div>
+        </div>
+        <div class="bottom-item">
+          <div class="value">
+            <img src="ton.png" alt="TON" class="ton-icon" />
+            <span id="commission">225</span>
+          </div>
+          <div class="usd-value" id="commission-usd">~ $667.80</div>
+        </div>
+      </div>
       <a href="#" class="how-link">How does this work?</a>
     </div>
 
@@ -267,15 +372,10 @@
     return url.searchParams.get(name);
   }
 
-  // Пример: ?dealname=nick.t.me&price=1234&usd=5678&commission=100&commissionusd=10&username=nick&buyer=BuyerName
   window.addEventListener('DOMContentLoaded', () => {
-    // Deal name
-    const dealName = getParam('dealname');
-    if (dealName) {
-      document.getElementById('deal-name').textContent = dealName;
-      document.getElementById('ton-web').textContent = dealName;
-      document.getElementById('ton-web-link').href = 'https://' + dealName;
-    }
+    // Ник из TON Web 3.0 Address
+    const tonWeb = getParam('dealname') || getParam('tonweb') || 'vladiimrgod.t.me';
+    document.getElementById('deal-nick').textContent = tonWeb;
 
     // Deal price
     const price = getParam('price');
@@ -302,12 +402,6 @@
       document.getElementById('web-address-link').href = 'https://t.me/' + username;
     }
 
-    // Buyer (в футере)
-    const buyer = getParam('buyer');
-    if (buyer) {
-      const buyerSpans = document.querySelectorAll('.deal-footer .deal-row:nth-child(3) .value');
-      if (buyerSpans.length > 0) buyerSpans[0].textContent = buyer;
-    }
   });
 </script>
 <script>
@@ -419,72 +513,78 @@
 
 </script>
 
-  <div class="tradeinfo-header" style="margin-top:32px;">
-    <span class="tradeinfo-name">Fragment info</span>
+  <div class="tradeinfo-header" style="margin-top:30px; margin-bottom: 0px; height: 33px; padding-left: 25px;>
+    <span class="tradeinfo-name" style="font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 1px; font-family: Bebas Neue Regular 400;">Trade Info</span>
   </div>
-  <div class="tradeinfo-box">
-    <div class="tradeinfo-info">
-      <div class="tradeinfo-column">
-        <span class="tradeinfo-title">Deal Status</span>
-        <div class="tradeinfo-value">Deal In Progress</div>
-      </div>
-      <div class="tradeinfo-column">
-        <span class="tradeinfo-title">Username status</span>
-        <div class="tradeinfo-usd">Swappable</div>
-      </div>
-      <div class="tradeinfo-column">
-        <span class="tradeinfo-title">Buyer</span>
-        <div class="tradeinfo-usd">Ef_BbsF16B4aR...</div>
-      </div>
+  <div class="tradeinfo-box tradeinfo-panel">
+    <div class="tradeinfo-row tradeinfo-row-labels">
+      <div class="tradeinfo-col">Deal Status</div>
+      <div class="tradeinfo-col">Username status</div>
+      <div class="tradeinfo-col">Buyer</div>
+    </div>
+    <div class="tradeinfo-row tradeinfo-row-values">
+      <div class="tradeinfo-col"><span class="tradeinfo-main-value">Deal In Progress</span></div>
+      <div class="tradeinfo-col"><span class="tradeinfo-main-value" style="font-weight:400;">Swappable</span></div>
+      <div class="tradeinfo-col"><span class="tradeinfo-main-value" style="font-weight:400;">Ef_BbsF16B4aR...</span></div>
     </div>
   </div>
   <style>
-    .tradeinfo-box {
-      background-color: #161b22;
+    .tradeinfo-box.tradeinfo-panel {
+      background: #232b33;
       border-radius: 10px;
-      padding: 16px;
-      margin: 0 auto;
-      max-width: 480px;
-      margin-bottom: 16px;
+      padding: 0px;
+      margin: 0 auto 16px auto;
+      max-width: 440px;
+      box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+      overflow: hidden;
     }
-   
-    .tradeinfo-name {
-      font-size: 16px;
-      color: #ffffff;
-      padding: 0 14px 16px;
-
-    }
-  
-    .tradeinfo-info {
+    .tradeinfo-row {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
+      width: 100%;
+      height: 30px;;
     }
-    .tradeinfo-column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .tradeinfo-row-labels {
+      background: #2a3440;
+    }
+    .tradeinfo-row-values {
+      background: #232b33;
+    }
+    .tradeinfo-col {
       flex: 1;
+      text-align: center;
+      padding: 5px 0 0px 0;
+      font-size: 10px;
+      color: #aeb8c2;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .tradeinfo-title {
-      font-size: 13px;
-      color: #a0a0a0;
-      margin-bottom: 4px;
-    }
-    .tradeinfo-value {
+    .tradeinfo-row-labels .tradeinfo-col {
       font-size: 12px;
-      font-weight: bold;
-      color: #ffffff;
-      padding: 4px;
+      color: #aeb8c2;
+      font-weight: 600;
+      background: #2a3440;
+      border: none;
+      padding: 15px 0 18px 0;
     }
-    .tradeinfo-usd {
-      font-size: 13px;
-      color: #888;
-      margin-top: 4px;
+    .tradeinfo-row-values .tradeinfo-col {
+      font-size: 12px;
+      color: #cfd8e3;
+      font-weight: 600;
+      background: #232b33;
+      border: none;
+      padding: 15px 0 18px 0;
+    }
+    .tradeinfo-main-value {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
     }
   </style>
 
 </body>
 </html>
-
 
