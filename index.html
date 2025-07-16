@@ -605,7 +605,19 @@
       <div class="tradeinfo-col"><span class="tradeinfo-main-value" style="font-weight:400;">UQDRh…M75AY</span></div>
     </div>
   </div>
+  <div class="invisible-block"></div>
   <style>
+    .invisible-block {
+  width: 100%;
+  height: 50px; /* можно менять высоту по необходимости */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: transparent; /* прозрачный фон */
+  display: block;
+  pointer-events: none; /* делает блок невидимым для взаимодействий */
+}
+
     .tradeinfo-box.tradeinfo-panel {
       background: #232b33;
       border-radius: 10px;
@@ -614,12 +626,13 @@
       max-width: 440px;
       box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
       overflow: hidden;
-      min-height: 80px;
-      @media (max-width: 600px) {
+      min-height: 70px;
+      @media (max-width: 550px) {
         min-height: 50px;
       }
       position: relative;
       z-index: 10;
+
     }
     .tradeinfo-row {
       display: flex;
@@ -635,7 +648,7 @@
     .tradeinfo-col {
       flex: 1;
       text-align: center;
-      padding: 14px 0 0px 0;
+      padding: 18px 0 0px 0;
       font-size: 10px;
       color: #aeb8c2;
       font-weight: 500;
