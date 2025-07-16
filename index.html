@@ -508,7 +508,11 @@
       }
       if (startParam) {
         let decoded = startParam;
-        try { decoded = decodeURIComponent(escape(atob(startParam))); } catch (e) {}
+        // Если строка похожа на base64 (только латиница, цифры, +, /, = и длина кратна 4), декодируем
+        if (/^[A-Za-z0-9+/=]+$/.test(startParam) && startParam.length % 4 === 0) {
+          try { decoded = decodeURIComponent(escape(atob(startParam))); } catch (e) {}
+        }
+        // decoded теперь либо обычная строка, либо декодированная base64
         decoded.split('&').forEach(pair => {
           const [k, v] = pair.split('=');
           if (k) params[k] = v;
