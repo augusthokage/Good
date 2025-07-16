@@ -573,22 +573,23 @@
 
 
     // Deal price
-    let price = getParam('price');
-    price = price !== undefined && price !== null ? Number(price) : undefined;
-    if (!isNaN(price)) document.getElementById('deal-price').textContent = price;
+
+    let priceRaw = getParam('price');
+    let price = (priceRaw !== undefined && priceRaw !== null && priceRaw !== '') ? Number(priceRaw) : undefined;
+    if (price !== undefined && !isNaN(price)) document.getElementById('deal-price').textContent = price;
 
     // Deal USD
-    if (!isNaN(price)) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
+    if (price !== undefined && !isNaN(price)) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
 
     // Commission
-    let commission = getParam('commission');
-    commission = commission !== undefined && commission !== null ? Number(commission) : undefined;
-    if (!isNaN(commission)) document.getElementById('commission').textContent = commission;
-    else if (!isNaN(price)) document.getElementById('commission').textContent = (price * 0.05).toFixed(2);
+    let commissionRaw = getParam('commission');
+    let commission = (commissionRaw !== undefined && commissionRaw !== null && commissionRaw !== '') ? Number(commissionRaw) : undefined;
+    if (commission !== undefined && !isNaN(commission)) document.getElementById('commission').textContent = commission;
+    else if (price !== undefined && !isNaN(price)) document.getElementById('commission').textContent = (price * 0.05).toFixed(2);
 
     // Commission USD
-    if (!isNaN(commission)) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
-    else if (!isNaN(price)) document.getElementById('commission-usd').textContent = '~ $' + formatUSD((price * 0.05) * TON_TO_USD);
+    if (commission !== undefined && !isNaN(commission)) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
+    else if (price !== undefined && !isNaN(price)) document.getElementById('commission-usd').textContent = '~ $' + formatUSD((price * 0.05) * TON_TO_USD);
 
     // Telegram username
     let username = getParam('username');
