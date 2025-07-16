@@ -571,21 +571,24 @@
     }
     document.getElementById('deal-nick').textContent = tonWeb;
 
+
     // Deal price
-    const price = getParam('price');
-    if (price) document.getElementById('deal-price').textContent = price;
+    let price = getParam('price');
+    price = price !== undefined && price !== null ? Number(price) : undefined;
+    if (!isNaN(price)) document.getElementById('deal-price').textContent = price;
 
     // Deal USD
-    if (price) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
+    if (!isNaN(price)) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
 
     // Commission
-    const commission = getParam('commission');
-    if (commission) document.getElementById('commission').textContent = commission;
-    else if (price) document.getElementById('commission').textContent = (price * 0.05).toFixed(2);
+    let commission = getParam('commission');
+    commission = commission !== undefined && commission !== null ? Number(commission) : undefined;
+    if (!isNaN(commission)) document.getElementById('commission').textContent = commission;
+    else if (!isNaN(price)) document.getElementById('commission').textContent = (price * 0.05).toFixed(2);
 
     // Commission USD
-    if (commission) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
-    else if (price) document.getElementById('commission-usd').textContent = '~ $' + formatUSD((price * 0.05) * TON_TO_USD);
+    if (!isNaN(commission)) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
+    else if (!isNaN(price)) document.getElementById('commission-usd').textContent = '~ $' + formatUSD((price * 0.05) * TON_TO_USD);
 
     // Telegram username
     let username = getParam('username');
