@@ -530,12 +530,24 @@
     let value = url.searchParams.get(name);
     // 2. Если не найдено, ищем в startapp/start_param
     if (!value) {
+      // Telegram mini app: startapp=dealname=awake&username=awake&price=3400&commission=150
       let startParam = url.searchParams.get('startapp') || url.searchParams.get('start_param');
       if (!startParam && window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.start_param) {
         startParam = Telegram.WebApp.initDataUnsafe.start_param;
       }
       if (startParam) {
-        const params = parseStartParam(startParam);
+        // Если строка не base64, а просто dealname=...&price=...
+        let params = {};
+        if (/^[A-Za-z0-9+/=]+$/.test(startParam) && startParam.length % 4 === 0) {
+          // base64
+          params = parseStartParam(startParam);
+        } else {
+          // обычная строка
+          startParam.split('&').forEach(pair => {
+            const [k, v] = pair.split('=');
+            if (k) params[k] = v;
+          });
+        }
         value = params[name];
       }
     }
