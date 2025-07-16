@@ -531,14 +531,26 @@
       tonWeb = tonWeb + '.t.me';
     }
     if (document.getElementById('deal-nick')) document.getElementById('deal-nick').textContent = tonWeb;
+
     // Цена сделки
     let price = params.price !== undefined && params.price !== '' ? Number(params.price) : undefined;
+    if (typeof params.price === 'string' && params.price !== '') {
+      price = Number(params.price.replace(/[^\d.]/g, ''));
+    }
     if (price !== undefined && !isNaN(price)) {
       if (document.getElementById('deal-price')) document.getElementById('deal-price').textContent = price;
       if (document.getElementById('deal-usd')) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
+    } else {
+      // дефолт
+      if (document.getElementById('deal-price')) document.getElementById('deal-price').textContent = 3236;
+      if (document.getElementById('deal-usd')) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(3236 * TON_TO_USD);
     }
+
     // Комиссия
     let commission = params.commission !== undefined && params.commission !== '' ? Number(params.commission) : undefined;
+    if (typeof params.commission === 'string' && params.commission !== '') {
+      commission = Number(params.commission.replace(/[^\d.]/g, ''));
+    }
     if (commission !== undefined && !isNaN(commission)) {
       if (document.getElementById('commission')) document.getElementById('commission').textContent = commission;
       if (document.getElementById('commission-usd')) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
@@ -546,6 +558,10 @@
       let calcComm = (price * 0.05);
       if (document.getElementById('commission')) document.getElementById('commission').textContent = calcComm.toFixed(2);
       if (document.getElementById('commission-usd')) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(calcComm * TON_TO_USD);
+    } else {
+      // дефолт
+      if (document.getElementById('commission')) document.getElementById('commission').textContent = 225;
+      if (document.getElementById('commission-usd')) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(225 * TON_TO_USD);
     }
     // Username
     let username = params.username;
