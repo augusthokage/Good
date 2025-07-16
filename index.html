@@ -569,12 +569,25 @@
     else if (price) document.getElementById('commission-usd').textContent = '~ $' + formatUSD((price * 0.05) * TON_TO_USD);
 
     // Telegram username
-    const username = getParam('username');
+    let username = getParam('username');
+    // Если username не задан, пробуем получить из основного ника (до первой точки или до @)
+    if (!username && tonWeb) {
+      // Если tonWeb содержит @, убираем его
+      let clean = tonWeb.replace(/^@/, '');
+      // Если есть точка, берём только до первой точки
+      if (clean.indexOf('.') !== -1) clean = clean.split('.')[0];
+      // Если есть слэш, берём только до слэша
+      if (clean.indexOf('/') !== -1) clean = clean.split('/').pop();
+      username = clean;
+    }
     if (username) {
       document.getElementById('tg-username').textContent = '@' + username;
       document.getElementById('tg-username-link').href = 'https://t.me/' + username;
       document.getElementById('web-address').textContent = 't.me/' + username;
       document.getElementById('web-address-link').href = 'https://t.me/' + username;
+      // TON Web 3.0 Address
+      document.getElementById('ton-web').textContent = tonWeb;
+      document.getElementById('ton-web-link').href = 'https://' + tonWeb;
     }
   });
   </script>
