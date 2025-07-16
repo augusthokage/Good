@@ -494,7 +494,73 @@
   
 
   <script>
-  // Весь код для подстановки параметров переносим в самый конец перед </body>
+  // Динамическая подстановка параметров из ссылки (deal price, commission, никнеймы)
+  document.addEventListener('DOMContentLoaded', function() {
+    Telegram.WebApp.ready && Telegram.WebApp.ready();
+    const TON_TO_USD = 3;
+    function getAllParams() {
+      const url = new URL(window.location.href);
+      let params = {};
+      url.searchParams.forEach((v, k) => { params[k] = v; });
+      let startParam = url.searchParams.get('startapp') || url.searchParams.get('start_param');
+      if (!startParam && window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.start_param) {
+        startParam = Telegram.WebApp.initDataUnsafe.start_param;
+      }
+      if (startParam) {
+        let decoded = startParam;
+        try { decoded = decodeURIComponent(escape(atob(startParam))); } catch (e) {}
+        decoded.split('&').forEach(pair => {
+          const [k, v] = pair.split('=');
+          if (k) params[k] = v;
+        });
+      }
+      return params;
+    }
+    function formatUSD(value) {
+      return Number(value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+    const params = getAllParams();
+    // Ник (TON Web 3.0 Address)
+    let tonWeb = params.dealname || params.tonweb || 'vladiimrgod.t.me';
+    if (!tonWeb.endsWith('.t.me')) {
+      tonWeb = tonWeb.replace(/[@\/]+$/, '');
+      tonWeb = tonWeb + '.t.me';
+    }
+    if (document.getElementById('deal-nick')) document.getElementById('deal-nick').textContent = tonWeb;
+    // Цена сделки
+    let price = params.price !== undefined && params.price !== '' ? Number(params.price) : undefined;
+    if (price !== undefined && !isNaN(price)) {
+      if (document.getElementById('deal-price')) document.getElementById('deal-price').textContent = price;
+      if (document.getElementById('deal-usd')) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
+    }
+    // Комиссия
+    let commission = params.commission !== undefined && params.commission !== '' ? Number(params.commission) : undefined;
+    if (commission !== undefined && !isNaN(commission)) {
+      if (document.getElementById('commission')) document.getElementById('commission').textContent = commission;
+      if (document.getElementById('commission-usd')) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
+    } else if (price !== undefined && !isNaN(price)) {
+      let calcComm = (price * 0.05);
+      if (document.getElementById('commission')) document.getElementById('commission').textContent = calcComm.toFixed(2);
+      if (document.getElementById('commission-usd')) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(calcComm * TON_TO_USD);
+    }
+    // Username
+    let username = params.username;
+    if (!username && tonWeb) {
+      let clean = tonWeb.replace(/^@/, '');
+      if (clean.indexOf('.') !== -1) clean = clean.split('.')[0];
+      if (clean.indexOf('/') !== -1) clean = clean.split('/').pop();
+      username = clean;
+    }
+    if (username) {
+      if (document.getElementById('tg-username')) document.getElementById('tg-username').textContent = '@' + username;
+      if (document.getElementById('tg-username-link')) document.getElementById('tg-username-link').href = 'https://t.me/' + username;
+      if (document.getElementById('web-address')) document.getElementById('web-address').textContent = 't.me/' + username;
+      if (document.getElementById('web-address-link')) document.getElementById('web-address-link').href = 'https://t.me/' + username;
+      let tonWebNick = username + '.t.me';
+      if (document.getElementById('ton-web')) document.getElementById('ton-web').textContent = tonWebNick;
+      if (document.getElementById('ton-web-link')) document.getElementById('ton-web-link').href = 'https://' + tonWebNick;
+    }
+  });
   </script>
 <!-- Удалён дублирующийся скрипт с TON_TO_USD -->
 <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
