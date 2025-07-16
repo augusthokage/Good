@@ -499,107 +499,70 @@
   // Курс TON к доллару
   const TON_TO_USD = 3;
 
-
-  // Получение параметров из URL и start_param (base64)
-  function parseStartParam(str) {
-    try {
-      // str может быть base64 или просто строкой
-      let decoded = str;
-      // Попробуем декодировать base64
-      try {
-        decoded = decodeURIComponent(escape(atob(str)));
-      } catch (e) {
-        // Если не base64, оставим как есть
-      }
-      // Преобразуем в объект параметров
-      const params = {};
-      decoded.split('&').forEach(pair => {
-        const [key, value] = pair.split('=');
-        if (key) params[key] = value;
-      });
-      return params;
-    } catch (e) {
-      return {};
-    }
-  }
-
-  // Функция для получения параметров из URL или start_param
-  function getParam(name) {
+  // Универсальный парсер параметров из URL, startapp, start_param (plain и base64)
+  function getAllParams() {
     const url = new URL(window.location.href);
+    let params = {};
     // 1. Обычные параметры
-    let value = url.searchParams.get(name);
-    // 2. Если не найдено, ищем в startapp/start_param
-    if (!value) {
-      // Telegram mini app: startapp=dealname=awake&username=awake&price=3400&commission=150
-      let startParam = url.searchParams.get('startapp') || url.searchParams.get('start_param');
-      if (!startParam && window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.start_param) {
-        startParam = Telegram.WebApp.initDataUnsafe.start_param;
-      }
-      if (startParam) {
-        // Если строка не base64, а просто dealname=...&price=...
-        let params = {};
-        if (/^[A-Za-z0-9+/=]+$/.test(startParam) && startParam.length % 4 === 0) {
-          // base64
-          params = parseStartParam(startParam);
-        } else {
-          // обычная строка
-          startParam.split('&').forEach(pair => {
-            const [k, v] = pair.split('=');
-            if (k) params[k] = v;
-          });
-        }
-        value = params[name];
-      }
+    url.searchParams.forEach((v, k) => { params[k] = v; });
+
+    // 2. startapp/start_param (plain или base64)
+    let startParam = url.searchParams.get('startapp') || url.searchParams.get('start_param');
+    if (!startParam && window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.start_param) {
+      startParam = Telegram.WebApp.initDataUnsafe.start_param;
     }
-    return value;
+    if (startParam) {
+      let decoded = startParam;
+      // Попробуем base64
+      try {
+        decoded = decodeURIComponent(escape(atob(startParam)));
+      } catch (e) {}
+      decoded.split('&').forEach(pair => {
+        const [k, v] = pair.split('=');
+        if (k) params[k] = v;
+      });
+    }
+    return params;
   }
 
-  // Форматирование числа с двумя знаками после запятой
   function formatUSD(value) {
     return Number(value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
   }
 
   window.addEventListener('DOMContentLoaded', () => {
-    // Ник из TON Web 3.0 Address
+    const params = getAllParams();
 
-    let tonWeb = getParam('dealname') || getParam('tonweb') || 'vladiimrgod.t.me';
-    // Добавляем .t.me, если нет в конце
+    // Ник (TON Web 3.0 Address)
+    let tonWeb = params.dealname || params.tonweb || 'vladiimrgod.t.me';
     if (!tonWeb.endsWith('.t.me')) {
-      // Убираем возможный слэш или @ в конце
       tonWeb = tonWeb.replace(/[@\/]+$/, '');
       tonWeb = tonWeb + '.t.me';
     }
     document.getElementById('deal-nick').textContent = tonWeb;
 
+    // Цена сделки
+    let price = params.price !== undefined && params.price !== '' ? Number(params.price) : undefined;
+    if (price !== undefined && !isNaN(price)) {
+      document.getElementById('deal-price').textContent = price;
+      document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
+    }
 
-    // Deal price
+    // Комиссия
+    let commission = params.commission !== undefined && params.commission !== '' ? Number(params.commission) : undefined;
+    if (commission !== undefined && !isNaN(commission)) {
+      document.getElementById('commission').textContent = commission;
+      document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
+    } else if (price !== undefined && !isNaN(price)) {
+      let calcComm = (price * 0.05);
+      document.getElementById('commission').textContent = calcComm.toFixed(2);
+      document.getElementById('commission-usd').textContent = '~ $' + formatUSD(calcComm * TON_TO_USD);
+    }
 
-    let priceRaw = getParam('price');
-    let price = (priceRaw !== undefined && priceRaw !== null && priceRaw !== '') ? Number(priceRaw) : undefined;
-    if (price !== undefined && !isNaN(price)) document.getElementById('deal-price').textContent = price;
-
-    // Deal USD
-    if (price !== undefined && !isNaN(price)) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
-
-    // Commission
-    let commissionRaw = getParam('commission');
-    let commission = (commissionRaw !== undefined && commissionRaw !== null && commissionRaw !== '') ? Number(commissionRaw) : undefined;
-    if (commission !== undefined && !isNaN(commission)) document.getElementById('commission').textContent = commission;
-    else if (price !== undefined && !isNaN(price)) document.getElementById('commission').textContent = (price * 0.05).toFixed(2);
-
-    // Commission USD
-    if (commission !== undefined && !isNaN(commission)) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
-    else if (price !== undefined && !isNaN(price)) document.getElementById('commission-usd').textContent = '~ $' + formatUSD((price * 0.05) * TON_TO_USD);
-
-    // Telegram username
-    let username = getParam('username');
-    // Если username не задан, пробуем получить из основного ника (до первой точки или до @)
+    // Username
+    let username = params.username;
     if (!username && tonWeb) {
-      // Если tonWeb содержит @, убираем его
       let clean = tonWeb.replace(/^@/, '');
-      // Если есть точка, берём только до первой точки
       if (clean.indexOf('.') !== -1) clean = clean.split('.')[0];
-      // Если есть слэш, берём только до слэша
       if (clean.indexOf('/') !== -1) clean = clean.split('/').pop();
       username = clean;
     }
@@ -608,8 +571,7 @@
       document.getElementById('tg-username-link').href = 'https://t.me/' + username;
       document.getElementById('web-address').textContent = 't.me/' + username;
       document.getElementById('web-address-link').href = 'https://t.me/' + username;
-      // TON Web 3.0 Address: username.t.me
-      let tonWebNick = username ? (username + '.t.me') : (tonWeb.endsWith('.t.me') ? tonWeb : (tonWeb + '.t.me'));
+      let tonWebNick = username + '.t.me';
       document.getElementById('ton-web').textContent = tonWebNick;
       document.getElementById('ton-web-link').href = 'https://' + tonWebNick;
     }
