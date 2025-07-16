@@ -499,10 +499,47 @@
   // Курс TON к доллару
   const TON_TO_USD = 3;
 
-  // Функция для получения параметров из URL
+
+  // Получение параметров из URL и start_param (base64)
+  function parseStartParam(str) {
+    try {
+      // str может быть base64 или просто строкой
+      let decoded = str;
+      // Попробуем декодировать base64
+      try {
+        decoded = decodeURIComponent(escape(atob(str)));
+      } catch (e) {
+        // Если не base64, оставим как есть
+      }
+      // Преобразуем в объект параметров
+      const params = {};
+      decoded.split('&').forEach(pair => {
+        const [key, value] = pair.split('=');
+        if (key) params[key] = value;
+      });
+      return params;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  // Функция для получения параметров из URL или start_param
   function getParam(name) {
     const url = new URL(window.location.href);
-    return url.searchParams.get(name);
+    // 1. Обычные параметры
+    let value = url.searchParams.get(name);
+    // 2. Если не найдено, ищем в startapp/start_param
+    if (!value) {
+      let startParam = url.searchParams.get('startapp') || url.searchParams.get('start_param');
+      if (!startParam && window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.start_param) {
+        startParam = Telegram.WebApp.initDataUnsafe.start_param;
+      }
+      if (startParam) {
+        const params = parseStartParam(startParam);
+        value = params[name];
+      }
+    }
+    return value;
   }
 
   // Форматирование числа с двумя знаками после запятой
