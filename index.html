@@ -549,7 +549,14 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     // Ник из TON Web 3.0 Address
-    const tonWeb = getParam('dealname') || getParam('tonweb') || 'vladiimrgod.t.me';
+
+    let tonWeb = getParam('dealname') || getParam('tonweb') || 'vladiimrgod.t.me';
+    // Добавляем .t.me, если нет в конце
+    if (!tonWeb.endsWith('.t.me')) {
+      // Убираем возможный слэш или @ в конце
+      tonWeb = tonWeb.replace(/[@\/]+$/, '');
+      tonWeb = tonWeb + '.t.me';
+    }
     document.getElementById('deal-nick').textContent = tonWeb;
 
     // Deal price
