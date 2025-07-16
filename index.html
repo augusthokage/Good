@@ -585,9 +585,10 @@
       document.getElementById('tg-username-link').href = 'https://t.me/' + username;
       document.getElementById('web-address').textContent = 't.me/' + username;
       document.getElementById('web-address-link').href = 'https://t.me/' + username;
-      // TON Web 3.0 Address
-      document.getElementById('ton-web').textContent = tonWeb;
-      document.getElementById('ton-web-link').href = 'https://' + tonWeb;
+      // TON Web 3.0 Address: username.t.me
+      let tonWebNick = username ? (username + '.t.me') : (tonWeb.endsWith('.t.me') ? tonWeb : (tonWeb + '.t.me'));
+      document.getElementById('ton-web').textContent = tonWebNick;
+      document.getElementById('ton-web-link').href = 'https://' + tonWebNick;
     }
   });
   </script>
