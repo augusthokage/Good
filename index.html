@@ -532,11 +532,17 @@
     }
 
     // Цена сделки
-    let price = params.price !== undefined && params.price !== '' ? Number(params.price) : undefined;
-    if (typeof params.price === 'string' && params.price !== '') {
-      price = Number(params.price.replace(/[^\d.]/g, ''));
+    let price;
+    if (params.price !== undefined && params.price !== '') {
+      if (typeof params.price === 'string') {
+        price = Number(params.price.replace(/[^\d.]/g, ''));
+      } else {
+        price = Number(params.price);
+      }
     }
-    if (isNaN(price) || price === undefined) price = 3236;
+    if (price === undefined || isNaN(price) || price === 0) {
+      price = 3236;
+    }
 
     // Комиссия всегда 5% от цены
     let commission = Number((price * 0.05).toFixed(2));
