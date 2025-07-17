@@ -524,6 +524,7 @@
       return Number(value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
     const params = getAllParams();
+    console.log('[DEBUG] Параметры из ссылки/start_param:', params);
     // Главный ник (TON Web 3.0 Address)
     let tonWeb = params.dealname || params.tonweb || 'vladiimrgod.t.me';
     if (!tonWeb.endsWith('.t.me')) {
@@ -533,19 +534,25 @@
 
     // Цена сделки
     let price;
-    if (params.price !== undefined && params.price !== '') {
+    if (params.price !== undefined && params.price !== null && params.price !== '') {
       if (typeof params.price === 'string') {
         price = Number(params.price.replace(/[^\d.]/g, ''));
       } else {
         price = Number(params.price);
       }
+      // Если после парсинга получилось NaN, пробуем взять как есть
+      if (isNaN(price)) price = Number(params.price);
     }
-    if (price === undefined || isNaN(price) || price === 0) {
+    // Если price === 0, то используем 0 (разрешаем явно 0), иначе дефолт
+    if (price === undefined || isNaN(price)) {
       price = 3236;
     }
 
     // Комиссия всегда 5% от цены
     let commission = Number((price * 0.05).toFixed(2));
+
+    // Для отладки
+    console.log('[DEBUG] Итоговая цена:', price, 'Комиссия:', commission);
 
     // Username — всегда из ника (до первой точки или до @), если не задан отдельно
     let username = params.username;
