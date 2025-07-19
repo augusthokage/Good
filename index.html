@@ -498,15 +498,18 @@
   document.addEventListener('DOMContentLoaded', function() {
     Telegram.WebApp.ready && Telegram.WebApp.ready();
     let TON_TO_USD = 3; // по умолчанию
-    // Получить курс TON/USD с CoinGecko
-    fetch('https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd')
-      .then(r => r.json())
-      .then(data => {
-        if (data && data['the-open-network'] && data['the-open-network'].usd) {
-          TON_TO_USD = Number(data['the-open-network'].usd);
-          updateUSD();
-        }
-      });
+
+    // Получить курс TON/USD с CoinGecko и обновлять доллары при изменении курса
+    function fetchTonRateAndUpdate() {
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd')
+        .then(r => r.json())
+        .then(data => {
+          if (data && data['the-open-network'] && data['the-open-network'].usd) {
+            TON_TO_USD = Number(data['the-open-network'].usd);
+            updateUSD();
+          }
+        });
+    }
 
     function updateUSD() {
       if (document.getElementById('deal-price') && document.getElementById('deal-usd')) {
@@ -545,7 +548,6 @@
       return Number(value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
     const params = getAllParams();
-    console.log('[DEBUG] Параметры из ссылки/start_param:', params);
     // Главный ник (TON Web 3.0 Address)
     let tonWeb = params.dealname || params.tonweb || 'vladiimrgod.t.me';
     if (!tonWeb.endsWith('.t.me')) {
@@ -561,19 +563,14 @@
       } else {
         price = Number(params.price);
       }
-      // Если после парсинга получилось NaN, пробуем взять как есть
       if (isNaN(price)) price = Number(params.price);
     }
-    // Если price === 0, то используем 0 (разрешаем явно 0), иначе дефолт
     if (price === undefined || isNaN(price)) {
       price = 3236;
     }
 
     // Комиссия всегда 5% от цены
     let commission = Number((price * 0.05).toFixed(2));
-
-    // Для отладки
-    console.log('[DEBUG] Итоговая цена:', price, 'Комиссия:', commission);
 
     // Username — всегда из ника (до первой точки или до @), если не задан отдельно
     let username = params.username;
@@ -597,10 +594,19 @@
 
     // Цена и комиссия
     if (document.getElementById('deal-price')) document.getElementById('deal-price').textContent = price;
-    if (document.getElementById('deal-usd')) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
     if (document.getElementById('commission')) document.getElementById('commission').textContent = commission;
-    if (document.getElementById('commission-usd')) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
+
     // После установки значений — если курс обновится, USD обновится автоматически
+    updateUSD();
+
+    // Следим за изменением deal-price и commission (если вдруг меняются динамически)
+    const observer = new MutationObserver(updateUSD);
+    if (document.getElementById('deal-price')) observer.observe(document.getElementById('deal-price'), { childList: true });
+    if (document.getElementById('commission')) observer.observe(document.getElementById('commission'), { childList: true });
+
+    // Периодически обновлять курс TON/USD (например, раз в 60 секунд)
+    fetchTonRateAndUpdate();
+    setInterval(fetchTonRateAndUpdate, 60000);
   });
   </script>
 <!-- Удалён дублирующийся скрипт с TON_TO_USD -->
