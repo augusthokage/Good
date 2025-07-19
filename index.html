@@ -497,7 +497,28 @@
   // Динамическая подстановка параметров из ссылки (deal price, commission, никнеймы)
   document.addEventListener('DOMContentLoaded', function() {
     Telegram.WebApp.ready && Telegram.WebApp.ready();
-    const TON_TO_USD = 3;
+    let TON_TO_USD = 3; // по умолчанию
+    // Получить курс TON/USD с CoinGecko
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd')
+      .then(r => r.json())
+      .then(data => {
+        if (data && data['the-open-network'] && data['the-open-network'].usd) {
+          TON_TO_USD = Number(data['the-open-network'].usd);
+          updateUSD();
+        }
+      });
+
+    function updateUSD() {
+      if (document.getElementById('deal-price') && document.getElementById('deal-usd')) {
+        const price = Number(document.getElementById('deal-price').textContent);
+        document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
+      }
+      if (document.getElementById('commission') && document.getElementById('commission-usd')) {
+        const commission = Number(document.getElementById('commission').textContent);
+        document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
+      }
+    }
+
     function getAllParams() {
       const url = new URL(window.location.href);
       let params = {};
@@ -579,6 +600,7 @@
     if (document.getElementById('deal-usd')) document.getElementById('deal-usd').textContent = '~ $' + formatUSD(price * TON_TO_USD);
     if (document.getElementById('commission')) document.getElementById('commission').textContent = commission;
     if (document.getElementById('commission-usd')) document.getElementById('commission-usd').textContent = '~ $' + formatUSD(commission * TON_TO_USD);
+    // После установки значений — если курс обновится, USD обновится автоматически
   });
   </script>
 <!-- Удалён дублирующийся скрипт с TON_TO_USD -->
